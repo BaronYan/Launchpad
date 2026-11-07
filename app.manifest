@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Launchpad 的应用清单。
+
+  为什么要求管理员权限（requireAdministrator）：
+  程序需要往系统托盘注册图标（Shell_NotifyIcon）。这是一个跨进程消息，
+  受 UIPI 限制：进程的完整性级别必须不低于资源管理器，否则会被拒绝（错误码 5）。
+  在部分机器上资源管理器是提权运行的，普通权限的 Launchpad 就永远拿不到托盘图标。
+  以管理员身份运行时托盘正常，因此这里固定申请管理员权限。
+
+  副作用：每次启动会弹一次 UAC 确认框，这是系统行为，无法绕过。
+-->
+<assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1">
+  <assemblyIdentity version="1.0.0.0" name="Launchpad.app" />
+
+  <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
+    <security>
+      <requestedPrivileges>
+        <requestedExecutionLevel level="requireAdministrator" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+
+  <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
+    <application>
+      <!-- Windows 10 / 11 -->
+      <supportedOS Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}" />
+      <!-- Windows 8.1 -->
+      <supportedOS Id="{1f676c76-80e1-4239-95bb-83d0f6d0da78}" />
+    </application>
+  </compatibility>
+</assembly>

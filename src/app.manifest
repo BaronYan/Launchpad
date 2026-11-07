@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  正式版（Microsoft Store / 普通分发）的应用清单：asInvoker。
+
+  Store 的 MSIX 包不允许 requestedExecutionLevel=requireAdministrator，
+  所以正式工程（Launchpad.csproj）用这份清单。
+  个人使用、需要托盘图标且系统里资源管理器是提权运行时，
+  请用根目录 build.ps1 + app.manifest（requireAdministrator）。
+
+  同时声明 PerMonitorV2 DPI 感知，避免高分屏下自绘界面被系统拉伸变糊。
+-->
+<assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1">
+  <assemblyIdentity version="1.0.0.0" name="Launchpad.app" />
+
+  <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
+    <security>
+      <requestedPrivileges>
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+
+  <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
+    <application>
+      <supportedOS Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}" />
+      <supportedOS Id="{1f676c76-80e1-4239-95bb-83d0f6d0da78}" />
+    </application>
+  </compatibility>
+</assembly>

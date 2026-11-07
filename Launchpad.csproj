@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Launchpad 的正式工程文件（SDK 风格）。
+
+    · 目标框架保持 net48：现有代码就是 .NET Framework 4.8 的 WinForms，
+      这样不用改任何代码就能在 Visual Studio 里直接编译、调试。
+    · ApplicationManifest 指向 src\app.manifest（asInvoker）：
+      上架 Microsoft Store 的包不允许申请管理员权限，所以正式版用 asInvoker。
+      需要“以管理员身份运行”的个人版，仍可用根目录的 build.ps1（用的是 app.manifest）。
+    · 所有 .cs 由 SDK 自动包含（src 目录下的文件会一起编译）。
+  -->
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <LangVersion>latest</LangVersion>
+
+    <AssemblyName>Launchpad</AssemblyName>
+    <RootNamespace>Launchpad</RootNamespace>
+
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <ApplicationManifest>src\app.manifest</ApplicationManifest>
+
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Product>Launchpad</Product>
+    <Company>Launchpad</Company>
+    <Description>macOS Launchpad 风格的 Windows 应用启动器</Description>
+    <Copyright>Copyright © 2026</Copyright>
+
+    <Platforms>AnyCPU</Platforms>
+    <Deterministic>true</Deterministic>
+
+    <!-- MSIX 包版本固定为四段：1.0.0 -> 1.0.0.0 -->
+    <MsixVersion Condition="'$(MsixVersion)' == ''">$(Version).0</MsixVersion>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="package\out\" />
+  </ItemGroup>
+
+  <!--
+    在 Visual Studio 里按「生成」（Release 配置）时，自动把刚编译出来的 exe 打成 MSIX。
+    身份信息（IdentityName / Publisher / DisplayName）统一在 package\identity.json 里改，
+    不用每次敲命令。
+
+    -NonFatal：找不到 Windows SDK（makeappx）时只警告，不让编译失败。
+  -->
+  <Target Name="BuildMsixPackage" AfterTargets="Build" Condition="'$(Configuration)' == 'Release' and Exists('$(MSBuildProjectDirectory)\package\build-msix.ps1')">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\package\build-msix.ps1&quot; -Exe &quot;$(TargetPath)&quot; -Version &quot;$(MsixVersion)&quot; -NonFatal" />
+  </Target>
+
+</Project>
